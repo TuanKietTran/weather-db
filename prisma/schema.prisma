@@ -28,7 +28,6 @@ model Account {
     scope             String?
     id_token          String? // @db.Text
     session_state     String?
-    student_code      String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
@@ -48,8 +47,11 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
-    accounts      Account[]
-    sessions      Session[]
+
+    accounts    Account[]
+    sessions    Session[]
+    userWidgets UserWidget[]
+    preference  UserPreference?
 }
 
 model VerificationToken {
@@ -58,4 +60,34 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+// -- Table to store widgets
+model Widget {
+    id             String       @id @default(cuid())
+    name           String
+    description    String?
+    defaultContent String?
+    userWidgets    UserWidget[]
+}
+
+// -- Table to store user-customized widgets
+model UserWidget {
+    id        Int @id @default(autoincrement())
+    userId    String
+    widgetId  String
+    positionX Int?
+    positionY Int?
+    user      User   @relation(fields: [userId], references: [id])
+    widget    Widget @relation(fields: [widgetId], references: [id])
+}
+
+// -- Table to store user preferences (e.g., theme, units, etc.)
+model UserPreference {
+    id               Int     @id @default(autoincrement())
+    Theme            String?
+    TemperatureUnits String
+    TimeFormat       String
+    userId           String  @unique
+    user             User    @relation(fields: [userId], references: [id])
 }

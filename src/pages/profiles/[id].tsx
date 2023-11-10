@@ -9,10 +9,14 @@ import { ssgHelper } from "~/server/api/ssgHelper";
 import { api } from "~/utils/api";
 import { AppName } from "~/utils/constants";
 import ErrorPage from "next/error";
+import Link from "next/link";
+import { IconHoverEffect } from "~/components/IconHoverEffect";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import Settings from "./Settings";
 
-const ProfilePage: NextPage<
-  InferGetStaticPropsType<typeof getStaticProps>
-> = ({ id }) => {
+const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
+  id,
+}) => {
   const { data: profile } = api.profiles.getById.useQuery({ id });
 
   if (!profile?.name) return <ErrorPage statusCode={404}></ErrorPage>;
@@ -24,6 +28,17 @@ const ProfilePage: NextPage<
           {profile.name} | {AppName}
         </title>
       </Head>
+      <header className="sticky top-0 z-10 flex items-center border-b bg-white p-2">
+        <Link href=".." className="mr-2">
+          <IconHoverEffect>
+            <ArrowLeftIcon className="h-6 w-6 text-gray-500" />
+          </IconHoverEffect>
+        </Link>
+        <h1 className="text-lg font-bold flex-shrink-0">My Profile</h1>
+      </header>
+      <main className="flex min-h-screen flex-col p-2 gap-2">
+        <Settings />
+      </main>
     </>
   );
 };
@@ -33,7 +48,7 @@ export const getStaticPaths: GetStaticPaths = () => {
     paths: [],
     fallback: "blocking",
   };
-}
+};
 
 export async function getStaticProps(
   context: GetStaticPropsContext<{ id: string }>,

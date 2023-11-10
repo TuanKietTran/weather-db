@@ -11,7 +11,7 @@ export default function Button({
   className = "",
   ...props
 }: ButtonProps) {
-  const sizeClasses = size === "sm" ? "px-2 py-1" : "px-4 py-2 font-semibold";
+  const sizeClasses = size === "sm" ? "p-1" : "p-2 font-semibold";
 
   return (
     <button

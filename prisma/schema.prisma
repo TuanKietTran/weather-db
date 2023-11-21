@@ -85,9 +85,9 @@ model UserWidget {
 // -- Table to store user preferences (e.g., theme, units, etc.)
 model UserPreference {
     id               Int     @id @default(autoincrement())
-    Theme            String?
-    TemperatureUnits String
-    TimeFormat       String
+    appearance       String?
+    temperatureUnits String
+    timeFormat       String
     userId           String  @unique
     user             User    @relation(fields: [userId], references: [id])
 }

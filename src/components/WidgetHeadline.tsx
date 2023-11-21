@@ -7,7 +7,7 @@ export default function WidgetHeadline() {
   const settings: Settings = {
     temperatureUnit: "C",
     timeFormat: ""
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center">

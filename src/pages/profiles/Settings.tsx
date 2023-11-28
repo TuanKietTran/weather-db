@@ -5,25 +5,27 @@ import {
   Select,
   type SelectChangeEvent,
 } from "@mui/material";
-import { GetStaticPaths, GetStaticPropsContext } from "next";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
 import Divider from "~/components/Divider";
-import { ssgHelper } from "~/server/api/ssgHelper";
 import { Appearance, TemperatureUnit, TimeFormat } from "~/utils/constants";
 
-export default function Settings() {
-  const [settings, setSettings] = useState({
-    temperatureUnit: "" as TemperatureUnit,
-    timeFormat: "" as TimeFormat,
-    appearance: "" as Appearance,
-  });
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSettings({
-      ...settings,
-      [event.target.name]: event.target.value,
-    });
+type PreferenceProps = {
+  userId: string;
+  handleChange: (event: SelectChangeEvent) => void;
+  preference: {
+    appearance?: string;
+    temperatureUnit?: string;
+    timeFormat?: string;
   };
+};
+
+export default function Settings({
+  userId, handleChange, preference
+}: PreferenceProps) {
+  const session = useSession();
+  if (session.status !== "authenticated" || session.data.user.id !== userId) {
+    return null;
+  }
 
   return (
     <div>
@@ -41,7 +43,7 @@ export default function Settings() {
           <Select
             labelId="temperature-unit"
             id="temperature-unit"
-            value={settings.temperatureUnit}
+            value={preference.temperatureUnit}
             name="temperatureUnit"
             onChange={handleChange}
           >
@@ -63,7 +65,7 @@ export default function Settings() {
           <Select
             labelId="time-format"
             id="time-format"
-            value={settings.timeFormat}
+            value={preference.timeFormat}
             name="timeFormat"
             onChange={handleChange}
           >
@@ -89,7 +91,7 @@ export default function Settings() {
           <Select
             labelId="appearance"
             id="appearance"
-            value={settings.appearance}
+            value={preference.appearance}
             name="appearance"
             onChange={handleChange}
           >
@@ -102,33 +104,33 @@ export default function Settings() {
   );
 }
 
-export const getStaticPaths: GetStaticPaths = () => {
-  return {
-    paths: [],
-    fallback: "blocking",
-  };
-};
+// export const getStaticPaths: GetStaticPaths = () => {
+//   return {
+//     paths: [],
+//     fallback: "blocking",
+//   };
+// };
 
-export async function getStaticProps(
-  context: GetStaticPropsContext<{ id: string }>,
-) {
-  const id = context.params?.id;
+// export async function getStaticProps(
+//   context: GetStaticPropsContext<{ id: string }>,
+// ) {
+//   const id = context.params?.id;
 
-  if (!id) {
-    return {
-      redirect: {
-        destination: "/",
-      },
-    };
-  }
+//   if (!id) {
+//     return {
+//       redirect: {
+//         destination: "/",
+//       },
+//     };
+//   }
 
-  const ssg = ssgHelper();
-  await ssg.settings.getUserSetting.prefetch();
+//   const ssg = ssgHelper();
+//   await ssg.settings.getUserSetting.prefetch();
 
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-      id,
-    },
-  };
-}
+//   return {
+//     props: {
+//       trpcState: ssg.dehydrate(),
+//       id,
+//     },
+//   };
+// }

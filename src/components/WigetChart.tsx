@@ -5,7 +5,7 @@ import { api } from "~/utils/api";
 import { TemperatureUnit } from "~/utils/constants";
 import { useUserLocation } from "~/utils/location";
 
-export default function WidgetHeadline() {
+export default function WidgetChart() {
   const session = useSession();
   const context = api.useContext();
   const { latitude, longitude, error: locationError } = useUserLocation();

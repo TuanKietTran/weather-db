@@ -14,3 +14,4 @@ export enum Appearance {
   light = "light",
   dark = "dark",
 };
+

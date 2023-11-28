@@ -31,8 +31,8 @@ CREATE TABLE "UserWidget" (
 -- CreateTable
 CREATE TABLE "UserPreference" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "appearance" TEXT,
-    "temperatureUnits" TEXT NOT NULL,
+    "appearance" TEXT NOT NULL,
+    "temperatureUnit" TEXT NOT NULL,
     "timeFormat" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     CONSTRAINT "UserPreference_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE

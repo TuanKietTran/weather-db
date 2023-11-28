@@ -9,6 +9,7 @@ import DiscordProvider from "next-auth/providers/discord";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
+import { type Appearance, type TemperatureUnit, type TimeFormat } from "~/utils/constants";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,6 +21,11 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
       id: string;
+      preference?: {
+        appearance: Appearance;
+        temperatureUnit: TemperatureUnit;
+        timeFormat: TimeFormat;
+      }
       // ...other properties
       // role: UserRole;
     };

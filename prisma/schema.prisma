@@ -73,7 +73,7 @@ model Widget {
 
 // -- Table to store user-customized widgets
 model UserWidget {
-    id        Int @id @default(autoincrement())
+    id        Int    @id @default(autoincrement())
     userId    String
     widgetId  String
     positionX Int?
@@ -84,10 +84,10 @@ model UserWidget {
 
 // -- Table to store user preferences (e.g., theme, units, etc.)
 model UserPreference {
-    id               Int     @id @default(autoincrement())
-    appearance       String?
-    temperatureUnits String
-    timeFormat       String
-    userId           String  @unique
-    user             User    @relation(fields: [userId], references: [id])
+    id              Int    @id @default(autoincrement())
+    appearance      String
+    temperatureUnit String
+    timeFormat      String
+    userId          String @unique
+    user            User   @relation(fields: [userId], references: [id])
 }

@@ -11,3 +11,4 @@ export function isValidTimeFormat (format: string) {
 export function isValidAppearance (appearance: string) {
   return Object.values(Appearance).includes(appearance as Appearance);
 }
+

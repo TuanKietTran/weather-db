@@ -1,5 +1,5 @@
 import { type ButtonHTMLAttributes, type DetailedHTMLProps } from "react";
-import { type PropSize } from "~/ux/Size";
+import { type PropSize } from "~/models/Size";
 
 type ButtonProps = {
   size?: PropSize;

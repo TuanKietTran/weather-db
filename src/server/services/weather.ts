@@ -1,76 +1,28 @@
 // WeatherService.ts
-interface Location {
-  name: string;
-  region: string;
-  country: string;
-  lat: number;
-  lon: number;
-  tz_id: string;
-  localtime_epoch: number;
-  localtime: string;
-}
+import { type ErrorResponse } from "~/models/ErrorResponse";
+import {
+  type WeatherInput,
+  type WeatherData,
+  type WeatherServiceResult,
+} from "~/models/Weather";
 
-interface Condition {
-  text: string;
-  icon: string;
-  code: number;
-}
+const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
+const endpoint = "https://api.weatherapi.com/v1/";
 
-interface CurrentWeather {
-  last_updated_epoch: number;
-  last_updated: string;
-  temp_c: number;
-  temp_f: number;
-  is_day: number;
-  condition: Condition;
-  wind_mph: number;
-  wind_kph: number;
-  wind_degree: number;
-  wind_dir: string;
-  pressure_mb: number;
-  pressure_in: number;
-  precip_mm: number;
-  precip_in: number;
-  humidity: number;
-  cloud: number;
-  feelslike_c: number;
-  feelslike_f: number;
-  vis_km: number;
-  vis_miles: number;
-  uv: number;
-  gust_mph: number;
-  gust_kph: number;
-}
-
-interface WeatherData {
-  location: Location;
-  current: CurrentWeather;
-}
-
-interface ErrorResponse {
-  error: {
-    message: string;
-  };
-}
-
-export interface WeatherServiceResult {
-  weatherData: WeatherData | null;
-  loading: boolean;
-  error: string | null;
-}
-
-const useWeatherApi = async (
-  latitude: number,
-  longitude: number,
-): Promise<WeatherServiceResult> => {
-  const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
-  const endpoint = 'https://api.weatherapi.com/v1/current.json';
-  const queryParams = `q=${latitude},${longitude}&key=${apiKey}`;
-  const url = `${endpoint}?${queryParams}`;
+const weatherApi = async ({
+  latitude,
+  longitude,
+  api = "current",
+  forceAutoIp,
+}: WeatherInput): Promise<WeatherServiceResult> => {
+  const queryParams = forceAutoIp
+    ? `q=auto:ip&key=${apiKey}`
+    : `q=${latitude},${longitude}&key=${apiKey}`;
+  const url = `${endpoint}${api}.json?${queryParams}`;
 
   try {
     if (!apiKey) {
-      throw new Error('Missing API key');
+      throw new Error("Missing API key");
     }
     const response = await fetch(url);
 
@@ -80,16 +32,16 @@ const useWeatherApi = async (
     }
 
     const data = (await response.json()) as WeatherData;
-    return { weatherData: data, loading: false, error: null };
+    return { weatherData: data, error: null };
   } catch (error) {
     return {
       weatherData: null,
-      loading: false,
       error:
-        error instanceof Error ? error.message :
-        'An error occurred while fetching the weather data.',
+        error instanceof Error
+          ? error.message
+          : "An error occurred while fetching the weather data.",
     };
   }
 };
 
-export default useWeatherApi;
+export default weatherApi;

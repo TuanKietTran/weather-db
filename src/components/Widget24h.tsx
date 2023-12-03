@@ -43,10 +43,10 @@ export default function WidgetHourlyForecast() {
       return {
         time: hour.time,
         temp:
-          preference?.temperatureUnit.toString() ===
+          `${(preference?.temperatureUnit.toString() ===
           TemperatureUnit.F.toString()
             ? hour.temp_f
-            : hour.temp_c,
+            : hour.temp_c)}°${preference?.temperatureUnit ?? TemperatureUnit.C}`,
         icon: hour.condition.code,
         chance_of_rain: hour.chance_of_rain,
       };
@@ -67,7 +67,7 @@ export default function WidgetHourlyForecast() {
           <CardContent>
             <Typography variant="h6">{hour.time}</Typography>
             <WeatherIcon code={hour.icon} isDay={isDay(hour.time)} />
-            <Typography variant="body1">{hour.temp}°</Typography>
+            <Typography variant="body1">{hour.temp}</Typography>
             <Typography variant="caption">
               Precipitation: {hour.chance_of_rain}%
             </Typography>

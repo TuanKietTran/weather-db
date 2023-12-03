@@ -50,6 +50,7 @@ export default function WidgetHeadline() {
       temp,
       wind,
       humidity,
+      unit: preference?.temperatureUnit ?? TemperatureUnit.C,
     };
   };
 
@@ -62,6 +63,7 @@ export default function WidgetHeadline() {
       <div className="text-5xl">
         {data.temp}
         <sup>o</sup>
+        {data.unit}
       </div>
       <div className="font-bold">{data.condition}</div>
       <div className="flex gap-2 font-bold">

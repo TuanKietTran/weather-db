@@ -56,10 +56,8 @@ export default function WidgetFeelsLike() {
     <div className="space-x-2 p-4">
       <Card>
         <CardContent>
-          <Typography variant="body2">
-            <DeviceThermostatIcon /> feels like
-          </Typography>
-          <Typography variant="h3" className="pb-4">
+            <DeviceThermostatIcon /> Feels like
+          <Typography variant="h3" className="pb-8">
             {data.temp}°
           </Typography>
           <Typography variant="body2">{data.comments}</Typography>

@@ -2,8 +2,7 @@ import { Alert, Card, CardContent, CircularProgress, Typography } from "@mui/mat
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useUserLocation } from "~/utils/location";
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
-
+import VisibilityIcon from '@mui/icons-material/Visibility';
 export default function WidgetPercipitation() {
   const session = useSession();
   const context = api.useContext();
@@ -24,21 +23,17 @@ export default function WidgetPercipitation() {
   if (!weather || weather?.loading || session.status === "loading") {
     return <CircularProgress />;
   }
-
-  const precipitation = weather.weatherData?.current.precip_mm;
+  const visibility = weather.weatherData?.current.vis_km;
   return (
     <div className="space-x-2 p-4">
       <Card>
         <CardContent>
-          <WaterDropIcon/> Precipitation
-          <Typography variant="h3">
-            {precipitation} mm
+          <VisibilityIcon/> Visibility
+          <Typography variant="h3" className="pb-8">
+            {visibility} km
           </Typography>
-          <div className="font-bold pb-2">
-            in last 24h
-            </div>
-          <Typography variant="body2">
-            Less than 6mm expected in next 24h
+          <Typography variant="body2" className="pb-5">
+            Perfectly clear view.
           </Typography>
         </CardContent>
       </Card>

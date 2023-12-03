@@ -5,6 +5,9 @@ import WidgetFeelsLike from "~/components/WidgetFeelsLike";
 import WidgetHeadline from "~/components/WidgetHeadline";
 import WidgetPercipitation from "~/components/WidgetPercipitation";
 import Placeholder from "~/components/WidgetPlaceHolder";
+import WidgetHumidity from "~/components/WidgetHumidity";
+import WidgetVisibility from "~/components/WidgetVisibility";
+import WidgetWind from "~/components/WidgetWind";
 
 export default function Home() {
   return (
@@ -25,8 +28,20 @@ export default function Home() {
           <WidgetFeelsLike />
         </Placeholder>
 
-        <Placeholder top={-70} left={200} width={200} >
+        <Placeholder top={-252} left={200} width={200} >
           <WidgetPercipitation />
+        </Placeholder>
+
+        <Placeholder top={-504} left={400} width={200} >
+          <WidgetHumidity />
+        </Placeholder>
+
+        <Placeholder top={-756} left={600} width={200} >
+          <WidgetVisibility />
+        </Placeholder>
+
+        <Placeholder top={-756 - 252} left={800} width={200} >
+          <WidgetWind />
         </Placeholder>
       </main>
     </>

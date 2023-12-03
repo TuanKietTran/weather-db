@@ -41,7 +41,7 @@ export default function WidgetPercipitation() {
             in last 24h
             </div>
           <Typography variant="body2">
-            Less than 1mm expected in next 24h
+            Less than 6mm expected in next 24h
           </Typography>
         </CardContent>
       </Card>

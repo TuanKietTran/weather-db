@@ -19,7 +19,6 @@ const lightTheme = createTheme({
 
 export const useThemeStyling = () => {
   const preference = api.profiles.getUserPreference.useQuery().data;
-  console.log("theme", preference?.appearance);
 
   const getTheme = () => {
     // Determine the theme based on user preferences

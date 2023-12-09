@@ -1,12 +1,17 @@
-import { Alert, Card, CardContent, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useUserLocation } from "~/utils/location";
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
 
-export default function WidgetPercipitation() {
+export default function WidgetPrecipitation() {
   const session = useSession();
-  const context = api.useContext();
   const { latitude, longitude, error: locationError } = useUserLocation();
 
   const { data: weather, error: weatherError } =
@@ -27,21 +32,16 @@ export default function WidgetPercipitation() {
 
   const precipitation = weather.weatherData?.current.precip_mm;
   return (
-    <div className="space-x-2 p-4">
-      <Card>
+      <Card style={{ height: 200 }}>
         <CardContent>
-          <WaterDropIcon/> Precipitation
-          <Typography variant="h3">
-            {precipitation} mm
-          </Typography>
-          <div className="font-bold pb-2">
-            in last 24h
-            </div>
+          <WaterDropIcon /> Precipitation
+          <Typography variant="h4">{precipitation} mm
+          </Typography> 
+          <div className="font-bold pb-6">in last 24h</div>
           <Typography variant="body2">
             Less than 6mm expected in next 24h
           </Typography>
         </CardContent>
       </Card>
-    </div>
   );
 }

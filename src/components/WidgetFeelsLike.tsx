@@ -53,8 +53,7 @@ export default function WidgetFeelsLike() {
   const data = getFeelLikeData();
 
   return (
-    <div className="space-x-2 p-4">
-      <Card>
+      <Card style={{ height: 200 }}>
         <CardContent>
             <DeviceThermostatIcon /> Feels like
           <Typography variant="h3" className="pb-8">
@@ -63,7 +62,6 @@ export default function WidgetFeelsLike() {
           <Typography variant="body2">{data.comments}</Typography>
         </CardContent>
       </Card>
-    </div>
   );
 }
 

@@ -1,49 +1,72 @@
 // import Link from "next/link";
+import Widget from "~/components/Widget";
+import { type WidgetVariant } from "~/models/Widget";
+import { api } from "~/utils/api";
+import { WidthProvider, Responsive, type Layout } from "react-grid-layout";
+import "react-resizable/css/styles.css";
 
-import WidgetHourlyForecast from "~/components/Widget24h";
-import WidgetFeelsLike from "~/components/WidgetFeelsLike";
-import WidgetHeadline from "~/components/WidgetHeadline";
-import WidgetPercipitation from "~/components/WidgetPercipitation";
-import Placeholder from "~/components/WidgetPlaceHolder";
-import WidgetHumidity from "~/components/WidgetHumidity";
-import WidgetVisibility from "~/components/WidgetVisibility";
-import WidgetWind from "~/components/WidgetWind";
+const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
 export default function Home() {
+  const { data: widgets } = api.widget.getWidgets.useQuery();
+  const context = api.useContext();
+
+  const updateLayout = api.widget.updateLayout.useMutation({
+    onSuccess: async () => {
+      await context.widget.getWidgets.refetch();
+    },
+  });
+
+  const initializeWidgets = api.widget.initWidgets.useMutation({
+    onSuccess: async () => {
+      await context.widget.getWidgets.refetch();
+    },
+  });
+
+  const onLayoutChange = (layout: Layout[]) => {
+    const data = layout.map((item) => ({
+      id: item.i,
+      positionX: item.x,
+      positionY: item.y,
+      width: item.w,
+    }));
+    updateLayout.mutate(data);
+  };
+
   return (
-    <>
-      {/* <header className="sticky top-0 z-10 border-b pt-2 bg-black">
-        <h1 className="mb-2 px-4 text-lg font-bold ">Home</h1>
-      </header> */}
-      <main className="flex min-h-screen flex-col pt-2">
-        <Placeholder top={0} left={200}>
-          <WidgetHeadline />
-        </Placeholder>
+    <main className=" min-h-screen pt-2">
+      {widgets?.length === 0 && (
+        <button
+          onClick={() => initializeWidgets.mutate()}
+          className="bg-blue-500 text-white p-2 mb-2"
+        >
+          Initialize Widgets
+        </button>
+      )}
 
-        <Placeholder top={0} left={0} width={1005} >
-          <WidgetHourlyForecast />
-        </Placeholder>
-
-        <Placeholder top={0} left={0} width={200} >
-          <WidgetFeelsLike />
-        </Placeholder>
-
-        <Placeholder top={-252} left={200} width={200} >
-          <WidgetPercipitation />
-        </Placeholder>
-
-        <Placeholder top={-504} left={400} width={200} >
-          <WidgetHumidity />
-        </Placeholder>
-
-        <Placeholder top={-756} left={600} width={200} >
-          <WidgetVisibility />
-        </Placeholder>
-
-        <Placeholder top={-756 - 252} left={800} width={200} >
-          <WidgetWind />
-        </Placeholder>
-      </main>
-    </>
+      <ResponsiveReactGridLayout
+        compactType={"horizontal"}
+        className="layout relative"
+        breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+        cols={{ lg: 12, md: 10, sm: 6, xs: 2, xxs: 1 }}
+        rowHeight={100}
+        onLayoutChange={onLayoutChange}
+      >
+        {widgets?.map((widget) => (
+          <div
+            key={widget.id}
+            data-grid={{
+              w: widget.width,
+              h: 2,
+              x: widget.positionX,
+              y: widget.positionY,
+              resizeHandles: ["w", "e"],
+            }}
+          >
+            <Widget variant={widget.widget as WidgetVariant} />
+          </div>
+        ))}
+      </ResponsiveReactGridLayout>
+    </main>
   );
 }

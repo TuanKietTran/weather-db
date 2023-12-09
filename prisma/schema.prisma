@@ -62,24 +62,15 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-// -- Table to store widgets
-model Widget {
-    id             String       @id @default(cuid())
-    name           String
-    description    String?
-    defaultContent String?
-    userWidgets    UserWidget[]
-}
-
 // -- Table to store user-customized widgets
 model UserWidget {
-    id        Int    @id @default(autoincrement())
+    id        String    @id @default(cuid())
     userId    String
-    widgetId  String
     positionX Int?
     positionY Int?
+    width     Int?
     user      User   @relation(fields: [userId], references: [id])
-    widget    Widget @relation(fields: [widgetId], references: [id])
+    widget    String 
 }
 
 // -- Table to store user preferences (e.g., theme, units, etc.)

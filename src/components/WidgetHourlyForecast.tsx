@@ -49,6 +49,7 @@ export default function WidgetHourlyForecast() {
             : hour.temp_c)}°${preference?.temperatureUnit ?? TemperatureUnit.C}`,
         icon: hour.condition.code,
         chance_of_rain: hour.chance_of_rain,
+        precipitation: hour.precip_mm * 1000,
       };
     });
 
@@ -61,15 +62,15 @@ export default function WidgetHourlyForecast() {
   const hourly = getData();
 
   return (
-    <div className="flex overflow-x-auto space-x-2 p-4">
+    <div className="flex overflow-x-auto space-x-2 py-2 w-full">
       {hourly.map((hour, index) => (
-        <Card key={index} className="flex-shrink-0" style={{ minWidth: 120 }} >
-          <CardContent>
+        <Card key={index} className="flex-shrink-0" style={{ minWidth: 120, height: 200 }} >
+          <CardContent >
             <Typography variant="h6">{hour.time}</Typography>
-            <WeatherIcon code={hour.icon} isDay={isDay(hour.time)} />
-            <Typography variant="body1">{hour.temp}</Typography>
-            <Typography variant="caption">
-              Precipitation: {hour.chance_of_rain}%
+            <WeatherIcon code={hour.icon} isDay={isDay(hour.time)} className="justify-center" />
+            <Typography variant="body1" align="center">{hour.temp}</Typography>
+            <Typography variant="caption" align="center">
+              Precipitation: {hour.precipitation}
             </Typography>
           </CardContent>
         </Card>

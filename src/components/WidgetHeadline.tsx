@@ -57,7 +57,7 @@ export default function WidgetHeadline() {
   const data = getHeadlineData();
 
   return (
-    <div className="flex flex-col items-center justify-center">
+    <div className="flex flex-col items-center justify-center" style={{ height: 200}}>
       <div className="text-2xl">My Location</div>
       <div className="font-bold text-sm">{data.location}</div>
       <div className="text-5xl">

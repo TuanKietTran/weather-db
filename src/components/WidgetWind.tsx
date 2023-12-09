@@ -1,8 +1,14 @@
-import { Alert, Card, CardContent, CircularProgress, Typography } from "@mui/material";
+import {
+  Alert,
+  Card,
+  CardContent,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { useSession } from "next-auth/react";
 import { api } from "~/utils/api";
 import { useUserLocation } from "~/utils/location";
-import AirIcon from '@mui/icons-material/Air';
+import AirIcon from "@mui/icons-material/Air";
 export default function WidgetPercipitation() {
   const session = useSession();
   const context = api.useContext();
@@ -25,15 +31,13 @@ export default function WidgetPercipitation() {
   }
   const wind = weather.weatherData?.current.wind_kph;
   return (
-    <div className="space-x-2 p-4">
-      <Card>
-        <CardContent>
-          <AirIcon/> Wind
-          <Typography variant="h3" className="pb-4">
-            {wind} km/h
-          </Typography>
-        </CardContent>
-      </Card>
-    </div>
+    <Card style={{ height: 200 }}>
+      <CardContent>
+        <AirIcon /> Wind
+        <Typography variant="h3" className="pb-6">
+          {wind} km/h
+        </Typography>
+      </CardContent>
+    </Card>
   );
 }

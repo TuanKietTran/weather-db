@@ -25,8 +25,7 @@ export default function WidgetPercipitation() {
   }
   const humidity = weather.weatherData?.current.humidity;
   return (
-    <div className="space-x-2 p-4">
-      <Card>
+      <Card style={{ height: 200 }}>
         <CardContent>
           <WaterIcon/> Humidity
           <Typography variant="h3" className="pb-8">
@@ -37,6 +36,5 @@ export default function WidgetPercipitation() {
           </Typography>
         </CardContent>
       </Card>
-    </div>
   );
 }

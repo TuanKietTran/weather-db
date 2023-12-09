@@ -1,12 +1,4 @@
 -- CreateTable
-CREATE TABLE "Example" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
-);
-
--- CreateTable
 CREATE TABLE "Account" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
@@ -48,8 +40,25 @@ CREATE TABLE "VerificationToken" (
     "expires" DATETIME NOT NULL
 );
 
--- CreateIndex
-CREATE INDEX "Example_name_idx" ON "Example"("name");
+-- CreateTable
+CREATE TABLE "UserWidget" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "positionX" INTEGER,
+    "positionY" INTEGER,
+    "widget" TEXT NOT NULL,
+    CONSTRAINT "UserWidget_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "UserPreference" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "appearance" TEXT NOT NULL,
+    "temperatureUnit" TEXT NOT NULL,
+    "timeFormat" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    CONSTRAINT "UserPreference_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Account_provider_providerAccountId_key" ON "Account"("provider", "providerAccountId");
@@ -65,3 +74,6 @@ CREATE UNIQUE INDEX "VerificationToken_token_key" ON "VerificationToken"("token"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "VerificationToken_identifier_token_key" ON "VerificationToken"("identifier", "token");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserPreference_userId_key" ON "UserPreference"("userId");

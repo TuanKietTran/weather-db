@@ -6,6 +6,7 @@ import {
   ArrowLeftOnRectangleIcon,
   ArrowRightOnRectangleIcon,
   HomeIcon,
+  PencilIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 
@@ -26,6 +27,16 @@ export default function SideNav() {
         </li>
         {!!user && (
           <li>
+            <Link href={"/edit"}>
+              <IconHoverEffect className="flex items-center gap-2">
+                <PencilIcon className="h-6 w-6 text-gray-500" />
+                <span className="hidden text-lg md:inline">Edit</span>
+              </IconHoverEffect>
+            </Link>
+          </li>
+        )}
+        {!!user && (
+          <li>
             <Link href={`/profiles/${user.id}`}>
               <IconHoverEffect className="flex items-center gap-2">
                 <UserCircleIcon className="h-6 w-6 text-gray-500" />
@@ -36,12 +47,18 @@ export default function SideNav() {
         )}
         <li>
           {!user ? (
-            <Button onClick={() => void signIn()} className="flex items-center gap-2">
+            <Button
+              onClick={() => void signIn()}
+              className="flex items-center gap-2"
+            >
               <ArrowLeftOnRectangleIcon className="h-6 w-6 text-gray-500 md:hidden" />
               <span className="hidden text-lg md:inline">Sign in</span>
             </Button>
           ) : (
-            <Button onClick={() => void signOut()} className="flex items-center gap-2">
+            <Button
+              onClick={() => void signOut()}
+              className="flex items-center gap-2"
+            >
               <ArrowRightOnRectangleIcon className="h-6 w-6 text-gray-500: md:hidden" />
               <span className="hidden text-lg md:inline">Sign out</span>
             </Button>

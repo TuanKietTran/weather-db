@@ -1,13 +1,36 @@
-// import Link from "next/link";
+// pages/index.tsx
+
 import Widget from "~/components/Widget";
-import { type WidgetVariant } from "~/models/Widget";
+import { WidgetVariant } from "~/models/Widget";
 import { api } from "~/utils/api";
-import { WidthProvider, Responsive, type Layout } from "react-grid-layout";
+import { WidthProvider, Responsive, Layout } from "react-grid-layout";
 import "react-resizable/css/styles.css";
+import { GetServerSideProps, InferGetServerSidePropsType, NextPage } from 'next';
+import { ssgHelper } from "~/server/api/ssgHelper";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export default function Home() {
+interface HomeProps {
+  widgets: {
+    id: string;
+    positionX: number;
+    positionY: number;
+    width: number;
+  }[];
+}
+
+export async function getServerSideProps() {
+  const ssg = ssgHelper();
+  await ssg.widget.getWidgets.prefetch();
+  await ssg.weather.getWeather.prefetch({ forceAutoIp: true });
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+  };
+};
+
+const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
   const { data: widgets } = api.widget.getWidgets.useQuery();
   const context = api.useContext();
 
@@ -35,6 +58,15 @@ export default function Home() {
 
   return (
     <main className=" min-h-screen pt-2">
+      {widgets?.length === 0 && (
+        <button
+          onClick={() => initializeWidgets.mutate()}
+          className="bg-blue-500 text-white p-2 mb-2"
+        >
+          Initialize Widgets
+        </button>
+      )}
+
       <ResponsiveReactGridLayout
         compactType={"horizontal"}
         className="layout relative"
@@ -61,4 +93,6 @@ export default function Home() {
       </ResponsiveReactGridLayout>
     </main>
   );
-}
+};
+
+export default Home;

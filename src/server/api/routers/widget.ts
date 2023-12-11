@@ -139,8 +139,9 @@ export const widgetRouter = createTRPCRouter({
       return await db.userWidget.create({
         data: {
           userId: userId,
-          positionX: Math.floor(index / 5) * 200,
-          positionY: (index % 5) * 200,
+          positionX: index % 5,
+          positionY: Math.floor(index / 5),
+          width: 200,
           widget: widget,
         },
       });

@@ -2,36 +2,25 @@
 import Widget from "~/components/Widget";
 import { type WidgetVariant } from "~/models/Widget";
 import { api } from "~/utils/api";
-import { WidthProvider, Responsive, type Layout } from "react-grid-layout";
-import "react-resizable/css/styles.css";
+import { ssgHelper } from "~/server/api/ssgHelper";
+import { type InferGetServerSidePropsType, type NextPage } from "next";
+import { Responsive, WidthProvider } from "react-grid-layout";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
-export default function Home() {
-  const { data: widgets } = api.widget.getWidgets.useQuery();
-  const context = api.useContext();
-
-  const updateLayout = api.widget.updateLayout.useMutation({
-    onSuccess: async () => {
-      await context.widget.getWidgets.refetch();
+export async function getServerSideProps() {
+  const ssg = ssgHelper();
+  await ssg.widget.getWidgets.prefetch();
+  await ssg.weather.getWeather.prefetch({ forceAutoIp: true });
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
     },
-  });
-
-  const initializeWidgets = api.widget.initWidgets.useMutation({
-    onSuccess: async () => {
-      await context.widget.getWidgets.refetch();
-    },
-  });
-
-  const onLayoutChange = (layout: Layout[]) => {
-    const data = layout.map((item) => ({
-      id: item.i,
-      positionX: item.x,
-      positionY: item.y,
-      width: item.w,
-    }));
-    updateLayout.mutate(data);
   };
+};
+
+const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
+  const { data: widgets } = api.widget.getWidgets.useQuery();
 
   return (
     <main className=" min-h-screen pt-2">
@@ -42,7 +31,6 @@ export default function Home() {
         cols={{ lg: 12, md: 10, sm: 6, xs: 2, xxs: 1 }}
         rowHeight={100}
         maxRows={4}
-        onLayoutChange={onLayoutChange}
       >
         {widgets?.map((widget) => (
           <div
@@ -52,13 +40,16 @@ export default function Home() {
               h: 2,
               x: widget.positionX ?? 0,
               y: widget.positionY ?? 0,
-              resizeHandles: ["w", "e"],
+              static: true,
             }}
           >
             <Widget variant={widget.widget as WidgetVariant} />
           </div>
         ))}
       </ResponsiveReactGridLayout>
+
     </main>
   );
 }
+
+export default Home;

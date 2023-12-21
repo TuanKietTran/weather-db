@@ -62,7 +62,7 @@ export default function WidgetHourlyForecast() {
   const hourly = getData();
 
   return (
-    <div className="flex overflow-x-auto space-x-2 py-2 w-full">
+    <div className="flex overflow-x-auto space-x-2 pt-2 w-full">
       {hourly.map((hour, index) => (
         <Card key={index} className="flex-shrink-0" style={{ minWidth: 120, height: 200 }} >
           <CardContent >

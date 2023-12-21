@@ -1,51 +1,34 @@
-import { DragIndicator } from "@mui/icons-material";
-import React, { useState, type ReactNode, useRef } from "react";
-import Draggable from "react-draggable";
+import { Card, CardContent, IconButton } from "@mui/material";
+import React from "react";
+import AddIcon from "@mui/icons-material/Add";
+import { api } from "~/utils/api";
 
-interface DraggableWidgetPlaceholderProps {
-  children: ReactNode;
-  top: number;
-  left: number;
-  width?: number;
-}
+export default function PlaceHolder() {
+  const colorChange = "hover:bg-gray-200 focus-visible:bg-gray-200";
 
-const Placeholder: React.FC<DraggableWidgetPlaceholderProps> = ({
-  children,
-  top,
-  left,
-  width = 200, // Default width if not provided
-}) => {
-  const [isDragging, setIsDragging] = useState(false);
-  const nodeRef = useRef<HTMLDivElement | null>(null);
+  const context = api.useContext();
 
-  const handleDragStart = () => {
-    setIsDragging(true);
-  };
+  const addWidget = api.widget.createWidget.useMutation({
+    onSuccess: async (data) => {
+      await context.widget.getWidgets.refetch();
+    },
+  });
 
-  const handleDragStop = () => {
-    setIsDragging(false);
+  const onClick = () => {
+    // addWidget.mutate();
   };
 
   return (
-    <Draggable
-      handle=".handle"
-      defaultPosition={{ x: left, y: top }}
-      onStart={handleDragStart}
-      onStop={handleDragStop}
-      nodeRef={nodeRef}
+    <Card
+      style={{ height: 200 }}
+      onClick={onClick}
+      className={`flex items-center justify-center cursor-pointer ${colorChange}`}
     >
-      <div
-        className={`draggable-widget transition-opacity ease-in-out duration-300 ${isDragging ? "opacity-50" : ""}`}
-        style={{ width }}
-        ref={nodeRef}
-      >
-        <div className="handle">
-          <DragIndicator />
-        </div>
-        {children}
-      </div>
-    </Draggable>
+      <CardContent>
+        <IconButton>
+          <AddIcon sx={{ fontSize: 70 }} />
+        </IconButton>
+      </CardContent>
+    </Card>
   );
-};
-
-export default Placeholder;
+}

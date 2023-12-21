@@ -92,22 +92,28 @@ export const widgetRouter = createTRPCRouter({
         }),
       ),
     )
-    .mutation(({ input: widgets, ctx }) => {
+    .mutation(async ({ input: widgets, ctx }) => {
       const userId = ctx.session?.user.id;
       if (!userId) {
         throw new TRPCError({ code: "UNAUTHORIZED" });
       }
 
-      return widgets.map(async (widget) => {
-        return await db.userWidget.update({
-          where: { id: widget.id },
-          data: {
-            positionX: widget.positionX,
-            positionY: widget.positionY,
-            width: widget.width,
-          },
-        });
-      });
+      const layout = [];
+
+      for (const widget of widgets) {
+        layout.push(
+          await db.userWidget.update({
+            where: { id: widget.id },
+            data: {
+              positionX: widget.positionX,
+              positionY: widget.positionY,
+              width: widget.width,
+            },
+          }),
+        );
+      }
+
+      return layout;
     }),
 
   deleteWidget: protectedProcedure
@@ -119,7 +125,7 @@ export const widgetRouter = createTRPCRouter({
       }
 
       return await db.userWidget.delete({
-        where: { id: id },
+        where: { id: id, userId: userId },
       });
     }),
 
@@ -135,16 +141,18 @@ export const widgetRouter = createTRPCRouter({
       return;
     }
 
-    return WidgetDefinition.map(async (widget, index) => {
-      return await db.userWidget.create({
-        data: {
-          userId: userId,
-          positionX: index % 5,
-          positionY: Math.floor(index / 5),
-          width: 200,
-          widget: widget,
-        },
-      });
-    });
+    return await Promise.all(
+      WidgetDefinition.map(async (widget, index) => {
+        return await db.userWidget.create({
+          data: {
+            userId: userId,
+            positionX: index % 5,
+            positionY: Math.floor(index / 5),
+            width: 200,
+            widget: widget,
+          },
+        });
+      }),
+    );
   }),
 });

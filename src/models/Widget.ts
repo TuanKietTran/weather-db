@@ -19,6 +19,17 @@ export const widgetComponents = {
   // WigetChart, // Again, assuming there's a typo in the filename
 };
 
+export const widgetDisplayNames: Record<keyof typeof widgetComponents, string> = {
+  headline: "Headline",
+  feelsLike: "Feels Like",
+  humidity: "Humidity",
+  precipitation: "Precipitation",
+  visibility: "Visibility",
+  wind: "Wind",
+  hourly: "Hourly",
+  // WidgetChart: "Chart", // Assuming there's a typo in the filename
+};
+
 export const WidgetDefinition = Object.keys(widgetComponents);
 
 export type WidgetVariant = keyof typeof widgetComponents;

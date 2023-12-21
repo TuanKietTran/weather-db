@@ -1,17 +1,9 @@
 import {
-  widgetComponents,
   WidgetDefinition,
   widgetDisplayNames,
   type WidgetVariant,
 } from "~/models/Widget";
-import AddIcon from "@mui/icons-material/Add";
-import {
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  Paper,
-} from "@mui/material";
+import { Card, CardContent, Typography, Paper } from "@mui/material";
 
 type ToolboxProps = {
   variants: WidgetVariant[] | undefined;

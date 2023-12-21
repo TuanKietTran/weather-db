@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 import { ssgHelper } from "~/server/api/ssgHelper";
 import { type InferGetServerSidePropsType, type NextPage } from "next";
 import { Responsive, WidthProvider } from "react-grid-layout";
+import WidgetHeadline from "~/components/WidgetHeadline";
 
 const ResponsiveReactGridLayout = WidthProvider(Responsive);
 
@@ -17,9 +18,11 @@ export async function getServerSideProps() {
       trpcState: ssg.dehydrate(),
     },
   };
-};
+}
 
-const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
+const Home: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = () => {
   const { data: widgets } = api.widget.getWidgets.useQuery();
 
   return (
@@ -32,24 +35,39 @@ const Home: NextPage<InferGetServerSidePropsType<typeof getServerSideProps>> = (
         rowHeight={100}
         maxRows={4}
       >
-        {widgets?.map((widget) => (
+        {widgets ? (
+          widgets.map((widget) => (
+            <div
+              key={widget.id}
+              data-grid={{
+                w: widget.width ?? 2,
+                h: 2,
+                x: widget.positionX ?? 0,
+                y: widget.positionY ?? 0,
+                static: true,
+              }}
+            >
+              <Widget variant={widget.widget as WidgetVariant} />
+            </div>
+          ))
+        ) : (
           <div
-            key={widget.id}
+            key="start"
             data-grid={{
-              w: widget.width ?? 2,
+              w: 10,
               h: 2,
-              x: widget.positionX ?? 0,
-              y: widget.positionY ?? 0,
+              x: 0,
+              y: 0,
               static: true,
             }}
           >
-            <Widget variant={widget.widget as WidgetVariant} />
+            {" "}
+            <WidgetHeadline />{" "}
           </div>
-        ))}
+        )}
       </ResponsiveReactGridLayout>
-
     </main>
   );
-}
+};
 
 export default Home;

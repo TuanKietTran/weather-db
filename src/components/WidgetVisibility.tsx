@@ -5,7 +5,6 @@ import { useUserLocation } from "~/utils/location";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 export default function WidgetPercipitation() {
   const session = useSession();
-  const context = api.useContext();
   const { latitude, longitude, error: locationError } = useUserLocation();
 
   const { data: weather, error: weatherError } =

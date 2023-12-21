@@ -85,14 +85,14 @@ const EditPage: NextPage<
         }
       />
       <main className="min-h-screen pt-2">
-        {/* {widgets?.length === 0 && (
+        {widgets?.length === 0 && (
           <button
             onClick={() => initializeWidgets.mutate()}
-            className="bg-blue-500 text-white p-2 mb-2"
+            className="bg-blue-500 text-white absolute top-auto left-auto"
           >
-            Initialize Widgets
+            Suggest a Layout
           </button>
-        )} */}
+        )}
 
         <ResponsiveReactGridLayout
           compactType={"horizontal"}

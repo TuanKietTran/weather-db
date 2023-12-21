@@ -47,7 +47,7 @@ export const weatherRouter = createTRPCRouter({
         days: z.number().or(z.undefined()),
       }),
     )
-    .query(async ({ input: { latitude, longitude, days } }) => {
+    .query(async ({ input: { latitude, longitude } }) => { // add days to input if needed
       const { weatherData, error } = await weatherApi({
         latitude,
         longitude,

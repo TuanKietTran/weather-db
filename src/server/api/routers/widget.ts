@@ -2,7 +2,6 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "~/server/db";
-import { WidgetDefinition } from "~/models/Widget";
 
 export const widgetRouter = createTRPCRouter({
   getWidgets: publicProcedure.query(async ({ ctx }) => {
@@ -28,11 +27,12 @@ export const widgetRouter = createTRPCRouter({
 
       return widget;
     }),
+
   createWidget: protectedProcedure
     .input(
       z.object({
         positionX: z.number().or(z.undefined()),
-        positionY: z.number().or(z.undefined()), // Int?
+        positionY: z.number().or(z.undefined()),
         widget: z.string(),
       }),
     )
@@ -87,7 +87,7 @@ export const widgetRouter = createTRPCRouter({
         z.object({
           id: z.string(),
           positionX: z.number().or(z.undefined()),
-          positionY: z.number().or(z.undefined()), // Int?        })
+          positionY: z.number().or(z.undefined()),
           width: z.number().or(z.undefined()),
         }),
       ),
@@ -125,7 +125,7 @@ export const widgetRouter = createTRPCRouter({
       }
 
       return await db.userWidget.delete({
-        where: { id: id, userId: userId },
+        where: { id: id },
       });
     }),
 
@@ -135,21 +135,28 @@ export const widgetRouter = createTRPCRouter({
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
 
-    if (
-      (await db.userWidget.findMany({ where: { userId: userId } })).length > 0
-    ) {
-      return;
-    }
+    const topWidgets = await db.userWidget.groupBy({
+      by: ['widget'],
+      _count: {
+        widget: true,
+      },
+      orderBy: {
+        _count: {
+          widget: 'desc',
+        },
+      },
+      take: 3,
+    });
 
     return await Promise.all(
-      WidgetDefinition.map(async (widget, index) => {
+      topWidgets.map(async (widget, index) => {
         return await db.userWidget.create({
           data: {
             userId: userId,
             positionX: index % 5,
             positionY: Math.floor(index / 5),
             width: 200,
-            widget: widget,
+            widget: widget.widget,
           },
         });
       }),

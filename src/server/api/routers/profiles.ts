@@ -7,18 +7,23 @@ import {
 } from "~/server/api/trpc";
 import { Appearance, TemperatureUnit, TimeFormat } from "~/utils/constants";
 import { isValidAppearance, isValidTemperatureUnit } from "../middleware";
+import { TRPCError } from "@trpc/server";
 
 export const profilesRouter = createTRPCRouter({
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input: { id }, ctx }) => {
-      const profile = await ctx.db.user.findUnique({
+
+      const userId = ctx.session?.user.id;
+      if (!userId) {
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      }
+
+      const profile = await ctx.db.user.findFirst({
         where: { id },
-        select: {
-          name: true,
-          image: true,
-          preference: true,
-        },
+        include: {
+          preference: true
+        }
       });
 
       if (profile === null) return;
@@ -88,7 +93,6 @@ export const profilesRouter = createTRPCRouter({
           ? preference.timeFormat
           : oldPreference.timeFormat,
       };
-
 
       await ctx.db.userPreference.update({
         where: { userId: userId },
